@@ -1,3 +1,4 @@
+       >>SOURCE FORMAT FREE
        IDENTIFICATION DIVISION.
        PROGRAM-ID. "ORDERINGSYSTEM".
        AUTHOR.     GROUP-5.
@@ -5,90 +6,114 @@
        ENVIRONMENT DIVISION.
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-            SELECT ORDER-FILE ASSIGN TO "ORDER-INPUT.DAT"
-               ORGANIZATION IS LINE SEQUENTIAL.
             SELECT PRINT-FILE ASSIGN TO "RECEIPT-OUTPUT.DAT".
 
        DATA DIVISION.
        FILE SECTION.
-         FD ORDER-FILE.
-         01 CUSTOMER-DETAILS.
-            88 END-RECEIPT VALUE HIGH-VALUES.
-            02 CUSTOMER-NAME    PIC X(10).
-            02 CUSTOMER-ADDRESS PIC X(15).
-            02 FILLER           PIC X(2). 
-            02 CUSTOMER-NUMBER  PIC 9(11).
-         01 ORDER-DETAILS.
-            02 FILLER           PIC X(2).
-            02 CUSTOMER-ORDER1  PIC 99.
-            02 FILLER           PIC X(2).
-            02 ORDER-PCS1       PIC 99.
-            02 CUSTOMER-ORDER2  PIC 99.
-            02 FILLER           PIC X(2).
-            02 ORDER-PCS2       PIC 99.
-            02 FILLER           PIC X(2).
-            02 ORDER-TOTAL      PIC 9(4)V99.
-      
          FD PRINT-FILE.
-         WORKING-STORAGE SECTION.
-         01 HEADING-LINE.
-            02 FILLER           PIC X(10) VALUE "CUSTOMER NAME".
-            02 FILLER           PIC X(15) VALUE "ADRESS".
-            02 FILLER           PIC X(15) VALUE "PHONE NUMBER".
-            02 FILLER           PIC X(2)  VALUE SPACES.
-            02 FILLER           PIC X(2) VALUE "CHICKEN MEAL".
-            02 FILLER           PIC X(2)  VALUE SPACES.
-            02 FILLER           PIC 9(2) VALUE "PIECES".
-            02 FILLER           PIC X(2)  VALUE SPACES.
-            02 FILLER           PIC X(2) VALUE "PASTA MEAL".
-            02 FILLER           PIC X(2)  VALUE SPACES.
-            02 FILLER           PIC 9(2) VALUE "PIECES".
-            02 FILLER           PIC X(2)  VALUE SPACES.
-            02 FILLER           PIC X(11) VALUE "TOTAL".
-      
-         01 DETAIL-LINE.
-            02 DET-NAME         PIC X(15) VALUE "N/A".
-            02 DET-ADDRESS      PIC X(15).
-            02 DET-CNUM         PIC X(15).
-            02 FILLER           PIC X(2)  VALUE SPACES.
-            02 DET-ORDER1       PIC X(2).
-            02 FILLER           PIC X(2)  VALUE SPACES.
-            02 DET-PCS1         PIC 9(2).
-            02 FILLER           PIC X(2)  VALUE SPACES.
-            02 DET-ORDER2       PIC X(2).
-            02 FILLER           PIC X(2)  VALUE SPACES.
-            02 DET-PCS2         PIC 9(2).
-            02 FILLER           PIC X(2)  VALUE SPACES.
-            02 FILLER           PIC X VALUE '₱'.
-            02 DET-TOTAL        PIC 9(4)V99.
+         01 PRINT-LINE         PIC X(132).
+
+       WORKING-STORAGE SECTION.
+       01 ORDER-VALUES.
+           02 CONT-ORDER           PIC X VALUE "Y".
+           02 LOOP-COUNTER         PIC 9 VALUE 1.
+           02 ORDER-NUM            PIC 9 VALUE 1.
+           02 ORDER-LOAD           PIC 9.
+           02 ORDER-PRICES OCCURS 3 TIMES.
+             03 ORDER-PRICE        PIC 9(3)V9(2).
+           02 ORDER-CODES OCCURS 3 TIMES.
+             03 ORDER-CHOICE       PIC X(2).
+           02 ORDER-QTY OCCURS 3 TIMES.
+             03 ORDER-PCS          PIC 9(2).
+           02 ORDER-TOTAL          PIC 9(3)V9(2).
+
+       01 INFO-LINE.
+           02 FILLER           PIC X(15) VALUE "CUSTOMER NAME".
+           02 FILLER           PIC X(2) VALUE SPACES.
+           02 FILLER           PIC X(15) VALUE "ADDRESS".
+           02 FILLER           PIC X(2) VALUE SPACES.
+           02 FILLER           PIC X(9) VALUE "PHONE NUM".
+
+       01 DETAIL-INFO-LINE.
+           02 DET-NAME         PIC X(15).
+           02 FILLER           PIC X(2) VALUE SPACES.
+           02 DET-ADDRESS      PIC X(15).
+           02 FILLER           PIC X(2) VALUE SPACES.
+           02 DET-CNUM         PIC X(9).
+       
+       01 ORDER-LINE.
+           02 FILLER           PIC X(5) VALUE "ORDER".
+           02 FILLER           PIC X(2) VALUE SPACES.
+           02 FILLER           PIC X(8) VALUE "QUANTITY".
+           02 FILLER           PIC X(2) VALUE SPACES.
+           02 FILLER           PIC X(8) VALUE "PRICE".
+
+       01 DETAIL-ORDER-LINE.
+           02 DET-ORDER        PIC X(5).
+           02 FILLER           PIC X(2) VALUE SPACES.
+           02 DET-PCS          PIC X(8).
+           02 FILLER           PIC X(2) VALUE SPACES.
+           02 DET-PRICE        PIC 999.99.
+
+       01 HORIZONTAL-RULE      PIC X(25) VALUE 
+           "-------------------------".
+       01 TOTAL-LINE.
+           02 FILLER           PIC X(5) VALUE "TOTAL".
+           02 FILLER           PIC X(7) VALUE SPACES.
+           02 FILLER           PIC X(4) VALUE "PHP ".
+           02 DET-TOTAL        PIC 999.99 VALUE 000.00.
+
             
        PROCEDURE DIVISION.
-       0050-OPEN-FILE.
-           OPEN INPUT ORDER-FILE.
-           OPEN OUTPUT PRINT-FILE.
-           PERFORM 0100-PROCESS-RECEIPT.
-           PERFORM 0400-STOP-RUN.
-      
-       0100-PROCESS-RECEIPT.
-          PERFORM 0300-WRITE-HEADING-LINE.
-          READ ORDER-FILE.
-               AT END SET END-RECEIPT TO TRUE
-               END READ.
-          PERFORM 0200-CALCULATE-ORDER UNTIL END-RECEIPT.
-      
-       0200-CALCULATE-ORDER.
-      * IKAW NA BAHALA DITU DAVE  
+           PERFORM 0050-START-PROGRAM.
 
-       0300-PRINT-HEADING-LINE.
-           MOVE HEADING-LINE TO PRINT-LINE.
-           MOVE SPACES TO PRINT-LINE.
-           WRITE PRINT-LINE.
-       0320-PRINT-DETAIL-LINE.
-           MOVE DETAIL-LINE TO PRINT-LINE.
-       0400-STOP-RUN.
-           CLOSE ORDER-FILE.
-           CLOSE PRINT-FILE.
-      
+       
+       0050-START-PROGRAM.
+           OPEN OUTPUT PRINT-FILE.
+           PERFORM 0100-ORDER-LOOP.
+           PERFORM 0200-LOG-CREDENTIALS.
+           PERFORM 0300-PROCESS-RECEIPT.
+       
+       0100-ORDER-LOOP.
+           DISPLAY "EXECUTING LOOP".
+           PERFORM VARYING LOOP-COUNTER FROM 1 BY 1 UNTIL 
+           LOOP-COUNTER > 3
+             PERFORM 0150-MENU
+             COMPUTE ORDER-LOAD = ORDER-LOAD + 1
+             DISPLAY "ORDER CODE >> "
+             ACCEPT ORDER-CHOICE(LOOP-COUNTER)
+             MOVE FUNCTION UPPER-CASE(ORDER-CHOICE(LOOP-COUNTER)) TO
+             ORDER-CHOICE(LOOP-COUNTER)
+             EVALUATE ORDER-CHOICE(LOOP-COUNTER)
+               WHEN "C1"
+                 MOVE 120 TO ORDER-PRICE(LOOP-COUNTER)
+               WHEN "C2"
+                 MOVE 180.50 TO ORDER-PRICE(LOOP-COUNTER)
+               WHEN "C3"
+                 MOVE 210.90 TO ORDER-PRICE(LOOP-COUNTER)
+               WHEN "P1"
+                 MOVE 160.25 TO ORDER-PRICE(LOOP-COUNTER)
+               WHEN "P2"
+                 MOVE 200 TO ORDER-PRICE(LOOP-COUNTER)
+               WHEN "P3"
+                 MOVE 370.95 TO ORDER-PRICE(LOOP-COUNTER)
+             END-EVALUATE
+             DISPLAY " "
+             DISPLAY "ORDER QTY >> "
+             ACCEPT ORDER-PCS(LOOP-COUNTER)
+             DISPLAY " "
+             IF LOOP-COUNTER NOT EQUAL 3
+               DISPLAY "ORDER ANOTHER ITEM? Y/N >> "
+               ACCEPT CONT-ORDER
+               MOVE FUNCTION UPPER-CASE(CONT-ORDER) TO CONT-ORDER
+               IF CONT-ORDER = "N"
+                 MOVE 4 TO LOOP-COUNTER
+               END-IF
+             END-IF
+           END-PERFORM.   
+
+       0150-MENU.
+           DISPLAY " ".
            DISPLAY "███╗   ███╗███████╗███╗  ██╗██╗   ██╗██╗".
            DISPLAY "████╗ ████║██╔════╝████╗ ██║██║   ██║╚═╝".
            DISPLAY "██╔████╔██║█████╗  ██╔██╗██║██║   ██║   ".
@@ -98,16 +123,84 @@
            DISPLAY " ".
            DISPLAY "█▀▀ █░█ █ █▀▀ █▄▀ █▀▀ █▄░█  █▀▄▀█ █▀▀ ▄▀█ █░░ █▀ ▀".
            DISPLAY "█▄▄ █▀█ █ █▄▄ █░█ ██▄ █░▀█  █░▀░█ ██▄ █▀█ █▄▄ ▄█ ▄".
-           DISPLAY "C1 - ₱120.00 1PC CHICKEN, 1PC RICE, REGULAR DRINK".
-           DISPLAY "C2 - ₱180.50 2PCS CHICKEN, 1PC RICE, MEDIUM DRINK".
-           DISPLAY "C3 - ₱210.90 3PCS CHICKEN, 1PC RICE, 1 MEDIUM FRIES, 1 LARGE DRINK".
+           DISPLAY "C1 - ₱120.00 1PC CHICKEN, 1PC RICE, REGULAR 
+           DRINK".
+           DISPLAY "C2 - ₱180.50 2PCS CHICKEN, 1PC RICE, MEDIUM 
+           DRINK".
+           DISPLAY "C3 - ₱210.90 3PCS CHICKEN, 1PC RICE, 1 
+           MEDIUM FRIES, 1 LARGE DRINK".
            DISPLAY " ".
            DISPLAY "█▀█ ▄▀█ █▀ ▀█▀ ▄▀█ ▀".
            DISPLAY "█▀▀ █▀█ ▄█ ░█░ █▀█ ▄".
-           DISPLAY "P1 - ₱160.25 1PC CHICKEN, SPAGHETTI, REGULAR DRINK".
-           DISPLAY "P2 - ₱200.00 1PC CHICKEN, SPAGHETTI, REGULAR FRIES, MEDIUM DRINK".
-           DISPLAY "P3 - ₱370.95 6PCS CHICKEN NUGGETS, SPAGHETTI, CHEESE BURGER, LARGE DRINK".
+           DISPLAY "P1 - ₱160.25 1PC CHICKEN, SPAGHETTI, REGULAR 
+           DRINK".
+           DISPLAY "P2 - ₱200.00 1PC CHICKEN, SPAGHETTI, REGULAR 
+           FRIES, MEDIUM DRINK".
+           DISPLAY "P3 - ₱370.95 6PCS CHICKEN NUGGETS, SPAGHETTI, 
+           CHEESE BURGER, LARGE DRINK".
            DISPLAY " ".
+           DISPLAY "(3 ORDERS MAX)".
+           DISPLAY " ".
+
+       0200-LOG-CREDENTIALS.
+           DISPLAY " ".
+           DISPLAY "-- CUSTOMER DETAILS --"
+           DISPLAY " ".
+           DISPLAY "CUSTOMER NAME: ".
+           ACCEPT DET-NAME.
+           DISPLAY " ".
+           DISPLAY "ADDRESS: ".
+           ACCEPT DET-ADDRESS.
+           DISPLAY " ".
+           DISPLAY "PHONE NUMBER: "
+           ACCEPT DET-CNUM.
+
+       0300-PROCESS-RECEIPT.
+           PERFORM 0310-PRINT-INFO-LINE.
+           PERFORM 0320-PRINT-ORDER-LINE.
+           PERFORM 0330-CALCULATE-ORDER.
+           PERFORM 0340-PRINT-TOTAL-LINE.
+
+       0310-PRINT-INFO-LINE.
+           MOVE INFO-LINE TO PRINT-LINE.
+           WRITE PRINT-LINE.
+           MOVE SPACES TO PRINT-LINE.
+           MOVE DETAIL-INFO-LINE TO PRINT-LINE.
+           WRITE PRINT-LINE.
+           MOVE SPACES TO PRINT-LINE.
        
-      STOP RUN.
-      END PROGRAM ORDERINGSYSTEM.
+       0320-PRINT-ORDER-LINE.
+           MOVE ORDER-LINE TO PRINT-LINE.
+           WRITE PRINT-LINE AFTER ADVANCING 4 LINE.
+           MOVE SPACES TO PRINT-LINE.
+           MOVE 0 TO ORDER-NUM.
+           PERFORM VARYING ORDER-NUM FROM 1 BY 1 UNTIL 
+           ORDER-NUM > ORDER-LOAD
+             MOVE ORDER-CHOICE(ORDER-NUM) TO DET-ORDER
+             MOVE ORDER-PCS(ORDER-NUM) TO DET-PCS
+             MOVE ORDER-PRICE(ORDER-NUM) TO DET-PRICE
+             MOVE DETAIL-ORDER-LINE TO PRINT-LINE
+             WRITE PRINT-LINE
+           END-PERFORM.
+           
+       0330-CALCULATE-ORDER.
+           MOVE 0 TO ORDER-NUM.
+           PERFORM VARYING ORDER-NUM FROM 1 BY 1 UNTIL 
+           ORDER-NUM > ORDER-LOAD
+             MULTIPLY ORDER-PRICE(ORDER-NUM) BY 
+             ORDER-PCS(ORDER-NUM) GIVING ORDER-PRICE(ORDER-NUM)
+             COMPUTE ORDER-TOTAL = ORDER-PRICE(ORDER-NUM) + ORDER-TOTAL
+           END-PERFORM.
+
+       0340-PRINT-TOTAL-LINE.
+           MOVE HORIZONTAL-RULE TO PRINT-LINE.
+           WRITE PRINT-LINE.
+           MOVE SPACES TO PRINT-LINE.
+           MOVE ORDER-TOTAL TO DET-TOTAL.
+           MOVE TOTAL-LINE TO PRINT-LINE.
+           WRITE PRINT-LINE.
+           MOVE SPACES TO PRINT-LINE.
+
+           CLOSE PRINT-FILE.
+           STOP RUN.
+           END PROGRAM ORDERINGSYSTEM.
