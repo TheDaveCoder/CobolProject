@@ -75,7 +75,7 @@
            PERFORM 0300-PROCESS-RECEIPT.
        
        0100-ORDER-LOOP.
-           DISPLAY "EXECUTING LOOP".
+
            PERFORM VARYING LOOP-COUNTER FROM 1 BY 1 UNTIL 
            LOOP-COUNTER > 3
              PERFORM 0150-MENU
@@ -97,6 +97,9 @@
                  MOVE 200 TO ORDER-PRICE(LOOP-COUNTER)
                WHEN "P3"
                  MOVE 370.95 TO ORDER-PRICE(LOOP-COUNTER)
+               WHEN OTHER
+                 DISPLAY "ERROR ORDER CHOICE, NOT IN THE MENU"
+                 STOP RUN
              END-EVALUATE
              DISPLAY " "
              DISPLAY "ORDER QTY >> "
@@ -108,11 +111,21 @@
                MOVE FUNCTION UPPER-CASE(CONT-ORDER) TO CONT-ORDER
                IF CONT-ORDER = "N"
                  MOVE 4 TO LOOP-COUNTER
+               ELSE
+                 DISPLAY "-----INCORRECT INPUT CODE, WILL PROCEED TO CHECKOUT-----"
+                 MOVE 4 TO LOOP-COUNTER
                END-IF
              END-IF
            END-PERFORM.   
 
        0150-MENU.
+           DISPLAY "█████████╗ ██╗   ██╗ █████████╗  █████████╗ █████████╗ ███████╗ █████████╗ ██╗ █████████╗".
+           DISPLAY "███   ███║ ██║   ██║ ███   ███║   ╚═════██║  ╚═════██║ ██╔════╝ ███   ███║ ██║ ███   ███║".
+           DISPLAY "█████████║ ██║   ██║ █████████║     ╔███╔═╝    ╔███╔═╝ █████╗   █████████║ ██║ █████████║".
+           DISPLAY "██╔══════╝ ██║   ██║ ██╔══════╝   ╔███╔═╝    ╔███╔═╝   ██╔══╝   ██████═══╝ ██║ ██╔═══╗██║".
+           DISPLAY "██║        ╚██████╔╝ ██║         █████████╗ █████████╗ ███████╗ ██║╚═╗███╗ ██║ ██║   ║██║".
+           DISPLAY "╚═╝         ╚═════╝  ╚═╝         ╚════════╝ ╚════════╝ ╚══════╝ ╚═╝  ╚═══╝ ╚═╝ ╚═╝   ╚══╝".
+           DISPLAY " ".
            DISPLAY " ".
            DISPLAY "███╗   ███╗███████╗███╗  ██╗██╗   ██╗██╗".
            DISPLAY "████╗ ████║██╔════╝████╗ ██║██║   ██║╚═╝".
@@ -121,23 +134,17 @@
            DISPLAY "██║ ╚═╝ ██║███████╗██║ ╚███║╚██████╔╝██╗".
            DISPLAY "╚═╝     ╚═╝╚══════╝╚═╝  ╚══╝ ╚═════╝ ╚═╝".
            DISPLAY " ".
-           DISPLAY "█▀▀ █░█ █ █▀▀ █▄▀ █▀▀ █▄░█  █▀▄▀█ █▀▀ ▄▀█ █░░ █▀ ▀".
-           DISPLAY "█▄▄ █▀█ █ █▄▄ █░█ ██▄ █░▀█  █░▀░█ ██▄ █▀█ █▄▄ ▄█ ▄".
-           DISPLAY "C1 - ₱120.00 1PC CHICKEN, 1PC RICE, REGULAR 
-           DRINK".
-           DISPLAY "C2 - ₱180.50 2PCS CHICKEN, 1PC RICE, MEDIUM 
-           DRINK".
-           DISPLAY "C3 - ₱210.90 3PCS CHICKEN, 1PC RICE, 1 
-           MEDIUM FRIES, 1 LARGE DRINK".
+           DISPLAY "█▀▀ █   ▄▀█ █▀ █▀ █ █▀▀ ▀".
+           DISPLAY "█▄▄ █▄▄ █▀█ ▄█ ▄█ █ █▄▄ ▄".
+           DISPLAY "C1 - ₱120.00 CLASSIC PAN PIZZA".
+           DISPLAY "C2 - ₱180.50 HAWAIIAN GALORE PIZZA".
+           DISPLAY "C3 - ₱210.90 ULTRA MEATY LOVERS PIZZA".
            DISPLAY " ".
            DISPLAY "█▀█ ▄▀█ █▀ ▀█▀ ▄▀█ ▀".
-           DISPLAY "█▀▀ █▀█ ▄█ ░█░ █▀█ ▄".
-           DISPLAY "P1 - ₱160.25 1PC CHICKEN, SPAGHETTI, REGULAR 
-           DRINK".
-           DISPLAY "P2 - ₱200.00 1PC CHICKEN, SPAGHETTI, REGULAR 
-           FRIES, MEDIUM DRINK".
-           DISPLAY "P3 - ₱370.95 6PCS CHICKEN NUGGETS, SPAGHETTI, 
-           CHEESE BURGER, LARGE DRINK".
+           DISPLAY "█▀▀ █▀█ ▄█  █  █▀█ ▄".
+           DISPLAY "P1 - ₱160.25 1PC CHICKEN, SPAGHETTI, 1 SLICE CLASSIC PIZZA, REGULAR DRINK".
+           DISPLAY "P2 - ₱200.00 1PC CHICKEN, SPAGHETTI, 1 SLICE HAWAIIAN PIZZA REGULAR FRIES, MEDIUM DRINK".
+           DISPLAY "P3 - ₱370.95 6PCS CHICKEN NUGGETS, SPAGHETTI, 1 SLICE ULTRA MEATY PIZZA, CHEESE BURGER, LARGE DRINK".
            DISPLAY " ".
            DISPLAY "(3 ORDERS MAX)".
            DISPLAY " ".
@@ -162,25 +169,20 @@
            PERFORM 0340-PRINT-TOTAL-LINE.
 
        0310-PRINT-INFO-LINE.
-           MOVE INFO-LINE TO PRINT-LINE.
-           WRITE PRINT-LINE.
-           MOVE SPACES TO PRINT-LINE.
-           MOVE DETAIL-INFO-LINE TO PRINT-LINE.
-           WRITE PRINT-LINE.
-           MOVE SPACES TO PRINT-LINE.
+           WRITE PRINT-LINE FROM INFO-LINE.
+           WRITE PRINT-LINE FROM DETAIL-INFO-LINE 
+             AFTER ADVANCING 1 LINE.
        
        0320-PRINT-ORDER-LINE.
-           MOVE ORDER-LINE TO PRINT-LINE.
-           WRITE PRINT-LINE AFTER ADVANCING 4 LINE.
-           MOVE SPACES TO PRINT-LINE.
+           WRITE PRINT-LINE FROM ORDER-LINE AFTER ADVANCING 4 LINE.
            MOVE 0 TO ORDER-NUM.
            PERFORM VARYING ORDER-NUM FROM 1 BY 1 UNTIL 
            ORDER-NUM > ORDER-LOAD
              MOVE ORDER-CHOICE(ORDER-NUM) TO DET-ORDER
              MOVE ORDER-PCS(ORDER-NUM) TO DET-PCS
              MOVE ORDER-PRICE(ORDER-NUM) TO DET-PRICE
-             MOVE DETAIL-ORDER-LINE TO PRINT-LINE
-             WRITE PRINT-LINE
+             WRITE PRINT-LINE FROM DETAIL-ORDER-LINE
+               AFTER ADVANCING 1 LINE
            END-PERFORM.
            
        0330-CALCULATE-ORDER.
@@ -193,14 +195,11 @@
            END-PERFORM.
 
        0340-PRINT-TOTAL-LINE.
-           MOVE HORIZONTAL-RULE TO PRINT-LINE.
-           WRITE PRINT-LINE.
-           MOVE SPACES TO PRINT-LINE.
+           WRITE PRINT-LINE FROM HORIZONTAL-RULE AFTER ADVANCING 1 LINE.
            MOVE ORDER-TOTAL TO DET-TOTAL.
-           MOVE TOTAL-LINE TO PRINT-LINE.
-           WRITE PRINT-LINE.
-           MOVE SPACES TO PRINT-LINE.
+           WRITE PRINT-LINE FROM TOTAL-LINE AFTER ADVANCING 1 LINE.
 
            CLOSE PRINT-FILE.
            STOP RUN.
            END PROGRAM ORDERINGSYSTEM.
+
