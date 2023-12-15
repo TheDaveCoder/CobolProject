@@ -135,8 +135,10 @@
                IF CONT-ORDER = "N"
                  MOVE 4 TO LOOP-COUNTER
                ELSE
-                 DISPLAY "-----INCORRECT INPUT CODE, WILL PROCEED TO CHECKOUT-----"
-                 MOVE 4 TO LOOP-COUNTER
+                 IF CONT-ORDER NOT EQUAL "Y"
+                   DISPLAY "-----INCORRECT INPUT CODE, WILL PROCEED TO CHECKOUT-----"
+                   MOVE 4 TO LOOP-COUNTER
+                 END-IF
                END-IF
              END-IF
            END-PERFORM.   
