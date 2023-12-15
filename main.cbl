@@ -41,6 +41,29 @@
            02 FILLER           PIC X(2) VALUE SPACES.
            02 DET-CNUM         PIC X(9).
        
+       01 WS-CURRENT-DATE-DATA.
+           02 WS-CURRENT-DATE.
+             03 WS-CURRENT-YEAR PIC 9(4).
+             03 WS-CURRENT-MONTH PIC 9(2).
+             03 WS-CURRENT-DAY PIC 9(2).
+           02 WS-CURRENT-TIME.
+             03 WS-CURRENT-HOURS PIC 9(2).
+             03 WS-CURRENT-MINUTE PIC 9(2).
+             03 WS-CURRENT-SECOND PIC 9(2).
+             03 WS-CURRENT-MILLISECONDS PIC 9(2).
+
+       01 FIXED-DT.
+           02 FORMATTED-DT.
+             03 WS-F-YEAR PIC 9(4).
+             03 WS-FILLER PIC X VALUE '-'.
+             03 WS-F-MONTH PIC 9(2).
+             03 WS-FILLER PIC X VALUE '-'.
+             03 WS-F-DAY PIC 9(2).
+             03 WS-FILLER PIC X VALUE SPACE.
+             03 WS-F-HOUR PIC 9(2).
+             03 WS-FILLER PIC X VALUE ':'.
+             03 WS-F-MIN PIC 9(2).
+
        01 ORDER-LINE.
            02 FILLER           PIC X(5) VALUE "ORDER".
            02 FILLER           PIC X(2) VALUE SPACES.
@@ -169,6 +192,13 @@
            PERFORM 0340-PRINT-TOTAL-LINE.
 
        0310-PRINT-INFO-LINE.
+           MOVE FUNCTION CURRENT-DATE TO WS-CURRENT-DATE-DATA.
+           MOVE WS-CURRENT-YEAR TO WS-F-YEAR.
+           MOVE WS-CURRENT-MONTH TO WS-F-MONTH.
+           MOVE WS-CURRENT-DAY TO WS-F-DAY.
+           MOVE WS-CURRENT-HOURS TO WS-F-HOUR.
+           MOVE WS-CURRENT-MINUTE TO WS-F-MIN.
+           WRITE PRINT-LINE FROM FORMATTED-DT.
            WRITE PRINT-LINE FROM INFO-LINE.
            WRITE PRINT-LINE FROM DETAIL-INFO-LINE 
              AFTER ADVANCING 1 LINE.
