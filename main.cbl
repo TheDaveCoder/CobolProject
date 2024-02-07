@@ -20,12 +20,12 @@
            02 ORDER-NUM            PIC 9 VALUE 1.
            02 ORDER-LOAD           PIC 9.
            02 ORDER-PRICES OCCURS 3 TIMES.
-             03 ORDER-PRICE        PIC 9(3)V9(2).
+             03 ORDER-PRICE        PIC 9(4)V9(2).
            02 ORDER-CODES OCCURS 3 TIMES.
              03 ORDER-CHOICE       PIC X(2).
            02 ORDER-QTY OCCURS 3 TIMES.
              03 ORDER-PCS          PIC 9(2).
-           02 ORDER-TOTAL          PIC 9(3)V9(2).
+           02 ORDER-TOTAL          PIC 9(5)V9(2).
 
        01 INFO-LINE.
            02 FILLER           PIC X(15) VALUE "CUSTOMER NAME".
@@ -84,7 +84,7 @@
            02 FILLER           PIC X(5) VALUE "TOTAL".
            02 FILLER           PIC X(7) VALUE SPACES.
            02 FILLER           PIC X(4) VALUE "PHP ".
-           02 DET-TOTAL        PIC 999.99 VALUE 000.00.
+           02 DET-TOTAL        PIC 99999.99 VALUE 00000.00.
 
             
        PROCEDURE DIVISION.
